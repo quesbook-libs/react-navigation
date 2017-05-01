@@ -37,6 +37,7 @@ const DefaultDrawerConfig = {
 const DrawerNavigator = (
   routeConfigs: NavigationRouteConfigMap,
   config: DrawerNavigatorConfig,
+  onDrawerAppear: Function,
 ) => {
   const mergedConfig = { ...DefaultDrawerConfig, ...config };
   const {
@@ -50,9 +51,12 @@ const DrawerNavigator = (
   const contentRouter = TabRouter(routeConfigs, tabsConfig);
   const drawerRouter = TabRouter({
     DrawerClose: {
-      screen: createNavigator(contentRouter)((props: *) =>
-        <DrawerScreen {...props} />
-      ),
+      screen: createNavigator(contentRouter)((props: *) => {
+        if (onDrawerAppear) {
+          onDrawerAppear();
+        }
+        return <DrawerScreen {...props} />;
+      }),
     },
     DrawerOpen: {
       screen: () => null,
